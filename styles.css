@@ -1,0 +1,8 @@
+.mod_rplace_pattern, .mod_rplace_chooser {
+    border: 1px solid black;
+}
+
+.mod_rplace_pattern td, .mod_rplace_chooser td {
+    width: 2em;
+    text-align: center;
+}

@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_rplace\api;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
 
@@ -49,6 +51,18 @@ $PAGE->set_url('/mod/rplace/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 
+\tool_realtime\api::subscribe($PAGE->context, 'mod_rplace', 'pattern', $PAGE->cm->id, (string)$USER->id);
+$PAGE->requires->js_call_amd('mod_rplace/rplace', 'init',
+    [$cm->id, api::COLORS]);
+
 echo $OUTPUT->header();
+
+if (has_capability('mod/rplace:paint', $PAGE->context)) {
+    echo html_writer::tag('p', 'Pick a color:');
+    echo api::display_colors();
+}
+
+echo html_writer::tag('p', 'Click anywhere to draw:', ['class' => 'pt-4']);
+echo html_writer::div(api::display_pattern($moduleinstance, $PAGE->cm));
 
 echo $OUTPUT->footer();

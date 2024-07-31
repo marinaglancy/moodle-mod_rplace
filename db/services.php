@@ -15,22 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * English language pack for Rplace
+ * External functions and service declaration for Rplace
+ *
+ * Documentation: {@link https://moodledev.io/docs/apis/subsystems/external/description}
  *
  * @package    mod_rplace
- * @category   string
+ * @category   webservice
  * @copyright  2024 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'Rplace';
-$string['modulenameplural'] = 'Rplaces';
-$string['patternupdated'] = 'Pattern updated';
-$string['pluginadministration'] = 'Rplace administration';
-$string['pluginname'] = 'Rplace';
-$string['privacy:metadata'] = 'The Rplace plugin doesn\'t store any personal data.';
-$string['rplace:addinstance'] = 'Add a new Rplace';
-$string['rplace:paint'] = 'Paint in mod_rplace';
-$string['rplace:view'] = 'View Rplace';
+$functions = [
+
+    'mod_rplace_paint' => [
+        'classname' => mod_rplace\external\paint::class,
+        'description' => 'Paint a dot',
+        'type' => 'write',
+        'ajax' => true,
+    ],
+];
+
+$services = [
+];
