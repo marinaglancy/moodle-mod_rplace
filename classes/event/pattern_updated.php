@@ -60,6 +60,9 @@ class pattern_updated extends \core\event\base {
      * Creates an instance of event
      *
      * @param \cm_info|\stdClass $cm
+     * @param int $x
+     * @param int $y
+     * @param int $color
      * @return pattern_updated
      */
     public static function create_from_coordinates($cm, int $x, int $y, int $color) {

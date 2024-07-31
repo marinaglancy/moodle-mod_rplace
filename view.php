@@ -51,18 +51,18 @@ $PAGE->set_url('/mod/rplace/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 
-\tool_realtime\api::subscribe($PAGE->context, 'mod_rplace', 'pattern', $PAGE->cm->id, (string)$USER->id);
-$PAGE->requires->js_call_amd('mod_rplace/rplace', 'init',
-    [$cm->id, api::COLORS]);
+api::subscribe($PAGE->cm);
+
+$PAGE->requires->js_call_amd('mod_rplace/rplace', 'init', [$cm->id, api::COLORS]);
 
 echo $OUTPUT->header();
 
 if (has_capability('mod/rplace:paint', $PAGE->context)) {
     echo html_writer::tag('p', 'Pick a color:');
-    echo api::display_colors();
+    echo api::display_color_picker();
 }
 
 echo html_writer::tag('p', 'Click anywhere to draw:', ['class' => 'pt-4']);
-echo html_writer::div(api::display_pattern($moduleinstance, $PAGE->cm));
+echo html_writer::div(api::display_canvas($moduleinstance, $PAGE->cm));
 
 echo $OUTPUT->footer();

@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_rplace;
+
 use html_writer;
 
 /**
@@ -54,12 +55,12 @@ class api {
     const WIDTH = 30;
     const HEIGHT = 30;
 
-    protected static function display_color_box(int $colorid, array $attrs = [], string $contents = '&nbsp;') {
-        $color = self::COLORS[$colorid % count(self::COLORS)];
-        return html_writer::tag('td', $contents, $attrs);
-    }
-
-    public static function display_colors() {
+    /**
+     * Display list of colors to pick from
+     *
+     * @return string
+     */
+    public static function display_color_picker(): string {
         $rv = '<table class="mod_rplace_chooser clickable"><tr>';
         for ($i = 0; $i < count(self::COLORS); $i++) {
             $rv .= html_writer::tag('td', '&nbsp;', ['data-id' => $i]);
@@ -68,7 +69,14 @@ class api {
         return $rv;
     }
 
-    public static function display_pattern(\stdClass $activityrecord, \cm_info $cm) {
+    /**
+     * Display the canvas
+     *
+     * @param \stdClass $activityrecord
+     * @param \cm_info $cm
+     * @return string
+     */
+    public static function display_canvas(\stdClass $activityrecord, \cm_info $cm): string {
         $rv = html_writer::start_tag('table', [
             'class' => 'mod_rplace_pattern clickable',
             'data-pattern' => $activityrecord->pattern ?? '',
@@ -84,10 +92,19 @@ class api {
         return $rv;
     }
 
-    public static function save_color(\cm_info $cm, int $x, int $y, int $color) {
+    /**
+     * Called from WS when user paints a pixel
+     *
+     * @param \cm_info $cm
+     * @param int $x
+     * @param int $y
+     * @param int $color
+     * @return void
+     */
+    public static function paint_a_pixel(\cm_info $cm, int $x, int $y, int $color): void {
         global $DB;
 
-        if ($x < 0 || $x >= api::WIDTH || $y < 0 || $y >= api::HEIGHT || $color < 0 || $color >= count(api::COLORS)) {
+        if ($x < 0 || $x >= self::WIDTH || $y < 0 || $y >= self::HEIGHT || $color < 0 || $color >= count(self::COLORS)) {
             return;
         }
 
@@ -96,9 +113,9 @@ class api {
 
         $patternrows = preg_split("/\\n/", $pattern);
         $newpattern = '';
-        for ($i = 0; $i < api::HEIGHT; $i++) {
+        for ($i = 0; $i < self::HEIGHT; $i++) {
             $patternrow = $i < count($patternrows) ? $patternrows[$i] : '';
-            for ($j = 0; $j < api::WIDTH; $j++) {
+            for ($j = 0; $j < self::WIDTH; $j++) {
                 $value = strlen($patternrow) > $j ? ord(substr($patternrow, $j, 1)) - ord('0') : 0;
                 $value = max(0, min($value, count(self::COLORS) - 1));
                 $value = ($j == $x && $i == $y) ? $color : $value;
@@ -109,14 +126,32 @@ class api {
 
         $DB->set_field('rplace', 'pattern', $newpattern, ['id' => $cm->instance]);
         \mod_rplace\event\pattern_updated::create_from_coordinates($cm, $x, $y, $color);
-        $context = \context_module::instance($cm->id);
         $payload = [
-                'pattern' => $newpattern,
-                'updates' => ['x' => $x, 'y' => $y, 'color' => $color],
+            'updates' => ['x' => $x, 'y' => $y, 'color' => $color],
         ];
-        foreach (enrol_get_course_users($cm->course, true) as $user) {
-            \tool_realtime\api::notify($context, 'mod_rplace', 'pattern', $cm->id,
-                (string) $user->id, $payload);
-        }
+        self::notify($cm, $payload);
+    }
+
+    /**
+     * Wrapper form the realtime API subscribing to canvas updated events
+     *
+     * @param \cm_info $cm
+     * @return void
+     */
+    public static function subscribe(\cm_info $cm): void {
+        $context = \context_module::instance($cm->id);
+        \tool_realtime\api::subscribe($context, 'mod_rplace', 'pattern', $cm->id, '');
+    }
+
+    /**
+     * Wrapper for the realtime API notifying about a canvas updated event
+     *
+     * @param \cm_info $cm
+     * @param array $payload
+     * @return void
+     */
+    public static function notify(\cm_info $cm, array $payload): void {
+        $context = \context_module::instance($cm->id);
+        \tool_realtime\api::notify($context, 'mod_rplace', 'pattern', $cm->id, '', $payload);
     }
 }

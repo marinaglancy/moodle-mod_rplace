@@ -46,9 +46,12 @@ class paint extends external_api {
     }
 
     /**
-     * Implementation of web service mod_rplace_paint
+     * Implementation of web service mod_rplace_paint - user drawing a pixel
      *
-     * @param mixed $param1
+     * @param int $cmid
+     * @param int $x
+     * @param int $y
+     * @param int $color
      */
     public static function execute($cmid, $x, $y, $color) {
         global $DB;
@@ -64,7 +67,7 @@ class paint extends external_api {
         self::validate_context($context);
         require_capability('mod/rplace:paint', $context);
 
-        api::save_color($cm, $x, $y, $color);
+        api::paint_a_pixel($cm, $x, $y, $color);
 
         return [];
     }
