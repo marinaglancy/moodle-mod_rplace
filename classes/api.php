@@ -26,6 +26,7 @@ use html_writer;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api {
+    /** @var array Available colors */
     const COLORS = [
         '#ffffff',
         '#be0039',
@@ -52,7 +53,9 @@ class api {
         '#898d90',
         '#d4d7d9',
     ];
+    /** @var int width or the canvas */
     const WIDTH = 30;
+    /** @var int height or the canvas */
     const HEIGHT = 30;
 
     /**

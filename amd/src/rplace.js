@@ -108,13 +108,12 @@ export const init = (cmid, colorset) => {
             message: 'Something went wrong, please refresh the page'});
     });
 
-    PubSub.subscribe(RealTimeEvents.EVENT, function(eventData) {
-        const data = eventData?.context?.component ? eventData.context : eventData;
-        if (!data.payload || data.component != 'mod_rplace' || data.area != 'pattern' || data.itemid != cmid) {
+    PubSub.subscribe(RealTimeEvents.EVENT, (data) => {
+        const {component, area, itemid, payload} = data;
+        if (!payload || component != 'mod_rplace' || area != 'pattern' || itemid != cmid) {
             return;
         }
 
-        // window.console.log('--- event:', eventData);
         const updates = data.payload.updates;
         const el = updates ? document.querySelector(SELECTORS.CLICKABLEPATTERNTD +
             `[data-x="${updates.x}"][data-y="${updates.y}"]`) : null;
