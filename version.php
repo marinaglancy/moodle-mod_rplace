@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'mod_rplace';
-$plugin->release      = '1.1';
-$plugin->version      = 2024073100;
+$plugin->release      = '1.2';
+$plugin->version      = 2024080100;
 $plugin->requires     = 2022112800;
 $plugin->supported    = [401, 405];
 $plugin->maturity     = MATURITY_STABLE;
-$plugin->dependencies = ['tool_realtime' => 2024073100];
+$plugin->dependencies = ['tool_realtime' => 2024080100];

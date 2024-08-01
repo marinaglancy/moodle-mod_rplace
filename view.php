@@ -51,7 +51,8 @@ $PAGE->set_url('/mod/rplace/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 
-api::subscribe($PAGE->cm);
+// Subscribe to realtime notifications.
+(new \tool_realtime\channel($PAGE->context, 'mod_rplace', 'pattern', $PAGE->cm->id))->subscribe();
 
 $PAGE->requires->js_call_amd('mod_rplace/rplace', 'init', [$cm->id, api::COLORS]);
 

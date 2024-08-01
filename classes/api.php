@@ -17,6 +17,7 @@
 namespace mod_rplace;
 
 use html_writer;
+use tool_realtime\channel;
 
 /**
  * Class api
@@ -132,29 +133,9 @@ class api {
         $payload = [
             'updates' => ['x' => $x, 'y' => $y, 'color' => $color],
         ];
-        self::notify($cm, $payload);
-    }
-
-    /**
-     * Wrapper form the realtime API subscribing to canvas updated events
-     *
-     * @param \cm_info $cm
-     * @return void
-     */
-    public static function subscribe(\cm_info $cm): void {
         $context = \context_module::instance($cm->id);
-        \tool_realtime\api::subscribe($context, 'mod_rplace', 'pattern', $cm->id, '');
-    }
 
-    /**
-     * Wrapper for the realtime API notifying about a canvas updated event
-     *
-     * @param \cm_info $cm
-     * @param array $payload
-     * @return void
-     */
-    public static function notify(\cm_info $cm, array $payload): void {
-        $context = \context_module::instance($cm->id);
-        \tool_realtime\api::notify($context, 'mod_rplace', 'pattern', $cm->id, '', $payload);
+        // Notify all subscribers about the event in real time.
+        (new channel($context, 'mod_rplace', 'pattern', $cm->id))->notify($payload);
     }
 }
