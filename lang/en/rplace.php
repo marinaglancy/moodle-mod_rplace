@@ -32,5 +32,6 @@ $string['pluginadministration'] = 'Rplace administration';
 $string['pluginname'] = 'Rplace';
 $string['privacy:metadata'] = 'The Rplace plugin doesn\'t store any personal data.';
 $string['rplace:addinstance'] = 'Add a new Rplace';
+$string['rplace:clearall'] = 'Clear all';
 $string['rplace:paint'] = 'Paint in mod_rplace';
 $string['rplace:view'] = 'View Rplace';

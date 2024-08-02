@@ -33,6 +33,7 @@ const SELECTORS = {
     CLICKABLEPATTERNTD: '.mod_rplace_pattern.clickable td',
     CHOOSERTD: '.mod_rplace_chooser td',
     CLICKABLECHOOSERTD: '.mod_rplace_chooser.clickable td',
+    CLEARALL: '.mod_rplace_actions [data-action="clearall"]',
 };
 
 let colors = ['#ffffff'];
@@ -125,5 +126,18 @@ export const init = (cmid, colorset) => {
                 redraw(pattern);
             }
         }
+    });
+
+    document.querySelectorAll(SELECTORS.CLEARALL).forEach(el => {
+        el.addEventListener('click', (e) => {
+            window.console.log(e);
+            e.preventDefault();
+            Ajax.call([{
+                methodname: 'mod_rplace_paint',
+                args: {
+                    cmid: parseInt(cmid), x: -1, y: -1, color: 0
+                }
+            }]);
+        });
     });
 };

@@ -66,4 +66,10 @@ if (has_capability('mod/rplace:paint', $PAGE->context)) {
 echo html_writer::tag('p', 'Click anywhere to draw:', ['class' => 'pt-4']);
 echo html_writer::div(api::display_canvas($moduleinstance, $PAGE->cm));
 
+if (has_capability('mod/rplace:clearall', $PAGE->context)) {
+    echo html_writer::tag('div',
+        $OUTPUT->single_button('#', 'Clear all', 'get', ['data-action' => 'clearall']),
+        ['class' => 'pt-2 mod_rplace_actions']);
+}
+
 echo $OUTPUT->footer();

@@ -97,6 +97,32 @@ class api {
     }
 
     /**
+     * Return the pattern as array
+     *
+     * @param \cm_info $cm
+     * @return array
+     */
+    protected static function get_pattern(\cm_info $cm): array {
+        global $DB;
+
+        $instance = $DB->get_record('rplace', ['id' => $cm->instance], 'id, pattern', MUST_EXIST);
+        $pattern = $instance->pattern ?? '';
+        $values = [];
+
+        $patternrows = preg_split("/\\n/", $pattern);
+        for ($i = 0; $i < self::HEIGHT; $i++) {
+            $values[$i] = [];
+            $patternrow = $i < count($patternrows) ? $patternrows[$i] : '';
+            for ($j = 0; $j < self::WIDTH; $j++) {
+                $value = strlen($patternrow) > $j ? ord(substr($patternrow, $j, 1)) - ord('0') : 0;
+                $value = max(0, min($value, count(self::COLORS) - 1));
+                $values[$i][$j] = $value;
+            }
+        }
+        return $values;
+    }
+
+    /**
      * Called from WS when user paints a pixel
      *
      * @param \cm_info $cm
@@ -112,17 +138,12 @@ class api {
             return;
         }
 
-        $instance = $DB->get_record('rplace', ['id' => $cm->instance], 'id, pattern', MUST_EXIST);
-        $pattern = $instance->pattern ?? '';
+        $values = self::get_pattern($cm);
 
-        $patternrows = preg_split("/\\n/", $pattern);
         $newpattern = '';
         for ($i = 0; $i < self::HEIGHT; $i++) {
-            $patternrow = $i < count($patternrows) ? $patternrows[$i] : '';
             for ($j = 0; $j < self::WIDTH; $j++) {
-                $value = strlen($patternrow) > $j ? ord(substr($patternrow, $j, 1)) - ord('0') : 0;
-                $value = max(0, min($value, count(self::COLORS) - 1));
-                $value = ($j == $x && $i == $y) ? $color : $value;
+                $value = ($j == $x && $i == $y) ? $color : $values[$i][$j];
                 $newpattern .= chr(ord('0') + $value);
             }
             $newpattern .= "\n";
@@ -137,5 +158,29 @@ class api {
 
         // Notify all subscribers about the event in real time.
         (new channel($context, 'mod_rplace', 'pattern', $cm->id))->notify($payload);
+    }
+
+    /**
+     * Called from WS when user paints a pixel
+     *
+     * @param \cm_info $cm
+     * @param int $color
+     * @return void
+     */
+    public static function fill_all(\cm_info $cm, int $color): void {
+        global $DB;
+
+        if ($color < 0 || $color >= count(self::COLORS)) {
+            return;
+        }
+
+        $values = self::get_pattern($cm);
+        for ($i = 0; $i < self::HEIGHT; $i++) {
+            for ($j = 0; $j < self::WIDTH; $j++) {
+                if ($values[$i][$j] != $color) {
+                    self::paint_a_pixel($cm, $j, $i, $color);
+                }
+            }
+        }
     }
 }

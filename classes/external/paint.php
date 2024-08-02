@@ -65,9 +65,14 @@ class paint extends external_api {
         [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'rplace');
         $context = \context_module::instance($cm->id);
         self::validate_context($context);
-        require_capability('mod/rplace:paint', $context);
 
-        api::paint_a_pixel($cm, $x, $y, $color);
+        if ($x == -1 && $y == -1) {
+            require_capability('mod/rplace:clearall', $context);
+            api::fill_all($cm, $color);
+        } else {
+            require_capability('mod/rplace:paint', $context);
+            api::paint_a_pixel($cm, $x, $y, $color);
+        }
 
         return [];
     }
