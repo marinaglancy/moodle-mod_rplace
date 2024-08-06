@@ -34,10 +34,11 @@ const SELECTORS = {
     CHOOSERTD: '.mod_rplace_chooser td',
     CLICKABLECHOOSERTD: '.mod_rplace_chooser.clickable td',
     CLEARALL: '.mod_rplace_actions [data-action="clearall"]',
+    FEEDBACKCHECKBOX: '[data-purpose="mod_rplace_instantfeedback"]',
 };
 
-let colors = ['#ffffff'];
-let currentColor = 2;
+let colors = ['#ffffff', '#000000'];
+let currentColor = 0;
 
 const setBgColor = (el, colorId) => {
     let style = 'background-color: ' + colors[colorId];
@@ -85,7 +86,10 @@ export const init = (cmid, colorset) => {
     document.querySelectorAll(SELECTORS.CLICKABLEPATTERNTD).forEach(el => {
         el.addEventListener('click', (e) => {
             e.preventDefault();
-            el.style = 'background-color: ' + colors[currentColor];
+            if (document.querySelector(SELECTORS.FEEDBACKCHECKBOX)?.checked) {
+                // Change the cell color instantly, without waiting for update from server.
+                setBgColor(el, currentColor);
+            }
             Ajax.call([{
                 methodname: 'mod_rplace_paint',
                 args: {
@@ -130,7 +134,6 @@ export const init = (cmid, colorset) => {
 
     document.querySelectorAll(SELECTORS.CLEARALL).forEach(el => {
         el.addEventListener('click', (e) => {
-            window.console.log(e);
             e.preventDefault();
             Ajax.call([{
                 methodname: 'mod_rplace_paint',

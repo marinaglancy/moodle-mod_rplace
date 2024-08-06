@@ -59,16 +59,24 @@ $PAGE->requires->js_call_amd('mod_rplace/rplace', 'init', [$cm->id, api::COLORS]
 echo $OUTPUT->header();
 
 if (has_capability('mod/rplace:paint', $PAGE->context)) {
-    echo html_writer::tag('p', 'Pick a color:');
+    echo html_writer::tag('p', get_string('pickacolor', 'rplace') . ':');
     echo api::display_color_picker();
 }
 
-echo html_writer::tag('p', 'Click anywhere to draw:', ['class' => 'pt-4']);
+echo html_writer::tag('p', get_string('clicktodraw', 'rplace') . ':', ['class' => 'pt-4']);
 echo html_writer::div(api::display_canvas($moduleinstance, $PAGE->cm));
+
+if (has_capability('mod/rplace:paint', $PAGE->context)) {
+    echo html_writer::tag('p',
+    html_writer::checkbox('instantfeedback', '1', true,
+        get_string('instantfeedback', 'rplace'),
+        ['data-purpose' => 'mod_rplace_instantfeedback', 'class' => 'mr-2']),
+    );
+}
 
 if (has_capability('mod/rplace:clearall', $PAGE->context)) {
     echo html_writer::tag('div',
-        $OUTPUT->single_button('#', 'Clear all', 'get', ['data-action' => 'clearall']),
+        $OUTPUT->single_button('#', get_string('clearall', 'moodle'), 'get', ['data-action' => 'clearall']),
         ['class' => 'pt-2 mod_rplace_actions']);
 }
 

@@ -25,9 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['clicktodraw'] = 'Click anywhere to draw';
+$string['instantfeedback'] = 'Show instant feedback on own actions';
 $string['modulename'] = 'Rplace';
 $string['modulenameplural'] = 'Rplaces';
 $string['patternupdated'] = 'Pattern updated';
+$string['pickacolor'] = 'Pick a color';
 $string['pluginadministration'] = 'Rplace administration';
 $string['pluginname'] = 'Rplace';
 $string['privacy:metadata'] = 'The Rplace plugin doesn\'t store any personal data.';

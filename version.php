@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'mod_rplace';
-$plugin->release      = '1.2';
-$plugin->version      = 2024080101;
+$plugin->release      = '1.3';
+$plugin->version      = 2024080600;
 $plugin->requires     = 2022112800;
 $plugin->supported    = [401, 405];
 $plugin->maturity     = MATURITY_STABLE;
