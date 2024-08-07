@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['clearall'] = 'Clear all';
 $string['clicktodraw'] = 'Click anywhere to draw';
 $string['instantfeedback'] = 'Show instant feedback on own actions';
 $string['modulename'] = 'Rplace';

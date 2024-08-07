@@ -76,7 +76,7 @@ if (has_capability('mod/rplace:paint', $PAGE->context)) {
 
 if (has_capability('mod/rplace:clearall', $PAGE->context)) {
     echo html_writer::tag('div',
-        $OUTPUT->single_button('#', get_string('clearall', 'moodle'), 'get', ['data-action' => 'clearall']),
+        $OUTPUT->single_button('#', get_string('clearall', 'rplace'), 'get', ['data-action' => 'clearall']),
         ['class' => 'pt-2 mod_rplace_actions']);
 }
 
